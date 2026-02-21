@@ -20,7 +20,12 @@ export interface NodeEventLoopState extends SimulationState {
 }
 
 const toLabel = (value: unknown | undefined, fallback: string): string => {
-  if (value && typeof value === 'object' && value?.hasOwnProperty('label')) {
+  if (
+    value &&
+    typeof value === 'object' &&
+    'label' in value &&
+    typeof (value as NodeEventLoopActionPayload).label === 'string'
+  ) {
     return (value as NodeEventLoopActionPayload).label as string;
   }
 
