@@ -38,6 +38,13 @@ export const App = (): JSX.Element => {
         <button onClick={() => controller.enqueueCallstackPop()}>Pop Stack</button>
       </section>
 
+      <section className="panel controls">
+        <strong>Presets</strong>
+        <button onClick={() => controller.loadSingleRequestPreset()}>Single Request Flow</button>
+        <button onClick={() => controller.loadIoBurstPreset()}>I/O Microtask Burst</button>
+        <button onClick={() => controller.clearHistory()}>Clear Timeline</button>
+      </section>
+
       <section className="panel metrics">
         <div>Runtime Tick: {snapshot.runtimeTick}</div>
         <div>Scheduler Tick: {snapshot.schedulerTick ?? '-'}</div>

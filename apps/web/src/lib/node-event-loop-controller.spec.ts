@@ -32,4 +32,29 @@ describe('NodeEventLoopController', () => {
     expect(seenTicks).toContain(1);
     expect(seenTicks).not.toContain(2);
   });
+
+  it('loads and executes the single-request preset flow', () => {
+    const controller = new NodeEventLoopController();
+
+    controller.loadSingleRequestPreset();
+    controller.step();
+    controller.step();
+
+    const snapshot = controller.getSnapshot();
+    expect(snapshot.state.incomingRequests).toBe(1);
+    expect(snapshot.state.callStack).toEqual([]);
+    expect(snapshot.history.length).toBeGreaterThan(0);
+  });
+
+  it('clears timeline history without resetting state', () => {
+    const controller = new NodeEventLoopController();
+
+    controller.injectRequest('req-c');
+    controller.step();
+    expect(controller.getSnapshot().history.length).toBeGreaterThan(0);
+
+    controller.clearHistory();
+    expect(controller.getSnapshot().history).toEqual([]);
+    expect(controller.getSnapshot().state.incomingRequests).toBe(1);
+  });
 });

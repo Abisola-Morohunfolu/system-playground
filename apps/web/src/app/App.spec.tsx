@@ -56,4 +56,29 @@ describe('App', () => {
     });
     container.remove();
   });
+
+  it('loads preset and can clear timeline from UI', async () => {
+    const { container, root } = renderApp();
+    const buttons = Array.from(container.querySelectorAll('button'));
+
+    const clickByText = (label: RegExp): void => {
+      const button = buttons.find((item) => label.test(item.textContent ?? ''));
+      expect(button).toBeTruthy();
+      act(() => {
+        button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+    };
+
+    clickByText(/single request flow/i);
+    clickByText(/^step$/i);
+    clickByText(/clear timeline/i);
+
+    expect(container.textContent).toMatch(/Incoming Requests: 1/i);
+    expect(container.textContent).toMatch(/\(no events yet\)/i);
+
+    act(() => {
+      root.unmount();
+    });
+    container.remove();
+  });
 });

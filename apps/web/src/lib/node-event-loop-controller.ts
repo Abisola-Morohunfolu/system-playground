@@ -118,6 +118,29 @@ export class NodeEventLoopController {
     this.emit();
   }
 
+  clearHistory(): void {
+    this.runtime.clearHistory();
+    this.emit();
+  }
+
+  loadSingleRequestPreset(): void {
+    this.runtime.enqueue({ type: 'request.received', payload: { label: 'preset-req-1' } });
+    this.runtime.enqueue({ type: 'task.dequeue' });
+    this.runtime.scheduleIn(1, { type: 'callstack.pop' });
+    this.emit();
+  }
+
+  loadIoBurstPreset(): void {
+    this.runtime.enqueue({ type: 'request.received', payload: { label: 'preset-req-2' } });
+    this.runtime.enqueue({ type: 'io.completed', payload: { label: 'preset-micro-1' } });
+    this.runtime.enqueue({ type: 'io.completed', payload: { label: 'preset-micro-2' } });
+    this.runtime.enqueue({ type: 'microtask.dequeue' });
+    this.runtime.scheduleIn(1, { type: 'callstack.pop' });
+    this.runtime.scheduleIn(1, { type: 'microtask.dequeue' });
+    this.runtime.scheduleIn(2, { type: 'callstack.pop' });
+    this.emit();
+  }
+
   reset(): void {
     this.pause();
     this.runtime.reset();
