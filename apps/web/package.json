@@ -1,0 +1,19 @@
+{
+  "name": "@system-playground/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"web app scaffold pending\"",
+    "build": "echo \"web app build scaffold pending\"",
+    "typecheck": "echo \"web app typecheck scaffold pending\"",
+    "lint": "echo \"web app lint scaffold pending\"",
+    "test": "echo \"web app test scaffold pending\"",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@system-playground/engine": "workspace:*",
+    "@system-playground/shared": "workspace:*",
+    "@system-playground/simulations": "workspace:*",
+    "@system-playground/ui": "workspace:*"
+  }
+}
