@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "echo \"web app scaffold pending\"",
     "build": "echo \"web app build scaffold pending\"",
-    "typecheck": "echo \"web app typecheck scaffold pending\"",
-    "lint": "echo \"web app lint scaffold pending\"",
-    "test": "echo \"web app test scaffold pending\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --ext .js,.cjs,.mjs --no-error-on-unmatched-pattern",
+    "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist"
   },
   "dependencies": {
