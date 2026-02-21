@@ -9,8 +9,13 @@ export interface SimulationAction {
   payload?: unknown;
 }
 
+export interface SimulationContext {
+  seed?: number;
+  now: () => number;
+}
+
 export interface SimulationPlugin<TState extends SimulationState = SimulationState> {
   id: SimulationId;
-  init(): TState;
-  step(state: TState, action?: SimulationAction): TState;
+  init(context?: SimulationContext): TState;
+  step(state: TState, action?: SimulationAction, context?: SimulationContext): TState;
 }
