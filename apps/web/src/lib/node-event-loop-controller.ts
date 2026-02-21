@@ -1,12 +1,19 @@
 import { ActionScheduler, SimulationRuntime } from '@system-playground/engine';
 import { NodeEventLoopState, nodeEventLoopPlugin } from '@system-playground/simulations';
 
+export interface NodeEventLoopHistoryItem {
+  tick: number;
+  actionType: string;
+  timestamp: number;
+}
+
 export interface NodeEventLoopSnapshot {
   state: NodeEventLoopState;
   runtimeTick: number;
   schedulerTick: number | null;
   isRunning: boolean;
   speedMs: number;
+  history: NodeEventLoopHistoryItem[];
 }
 
 export type NodeEventLoopListener = (snapshot: NodeEventLoopSnapshot) => void;
@@ -22,12 +29,19 @@ export class NodeEventLoopController {
   private speedMs = 400;
 
   getSnapshot(): NodeEventLoopSnapshot {
+    const history = this.runtime.getHistory().slice(-20).map((item) => ({
+      tick: item.tick,
+      actionType: item.action?.type ?? 'tick',
+      timestamp: item.timestamp,
+    }));
+
     return {
       state: this.runtime.getState(),
       runtimeTick: this.runtime.getTick(),
       schedulerTick: this.runtime.getSchedulerTick(),
       isRunning: this.intervalId !== null,
       speedMs: this.speedMs,
+      history,
     };
   }
 
