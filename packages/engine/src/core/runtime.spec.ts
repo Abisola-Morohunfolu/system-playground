@@ -42,4 +42,37 @@ describe('SimulationRuntime', () => {
     expect(runtime.getState().count).toBe(1);
     expect(runtime.reset()).toEqual({ tick: 0, count: 0, initializedAt: 42 });
   });
+
+  it('records step history with timestamps and actions', () => {
+    let now = 100;
+    const runtime = new SimulationRuntime(createPlugin(), { now: () => now });
+
+    runtime.step();
+    now = 200;
+    runtime.dispatch({ type: 'inc' });
+
+    expect(runtime.getHistory()).toEqual([
+      { tick: 1, action: undefined, timestamp: 100 },
+      { tick: 2, action: { type: 'inc' }, timestamp: 200 },
+    ]);
+
+    runtime.clearHistory();
+    expect(runtime.getHistory()).toEqual([]);
+  });
+
+  it('notifies subscribers on each step and supports unsubscribe', () => {
+    const runtime = new SimulationRuntime(createPlugin(), { now: () => 1 });
+    const seen: number[] = [];
+
+    const unsubscribe = runtime.subscribe((state) => {
+      seen.push(state.tick);
+    });
+
+    runtime.step();
+    runtime.step();
+    unsubscribe();
+    runtime.step();
+
+    expect(seen).toEqual([1, 2]);
+  });
 });
