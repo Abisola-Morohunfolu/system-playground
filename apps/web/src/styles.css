@@ -40,6 +40,12 @@ body {
   gap: 8px;
 }
 
+.controls button.active {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1e40af;
+}
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -88,6 +94,11 @@ body {
 
 .timeline .action {
   color: #0f172a;
+}
+
+.placeholder ul {
+  margin: 0;
+  padding-left: 18px;
 }
 
 .muted {

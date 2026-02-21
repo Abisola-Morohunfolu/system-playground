@@ -22,6 +22,7 @@ describe('App', () => {
     const { container, root } = renderApp();
 
     expect(container.textContent).toMatch(/Node.js Event Loop Playground/i);
+    expect(container.textContent).toMatch(/React Cycle/i);
     expect(container.textContent).toMatch(/Inject Request/i);
     expect(container.textContent).toMatch(/Task Queue/i);
 
@@ -75,6 +76,31 @@ describe('App', () => {
 
     expect(container.textContent).toMatch(/Incoming Requests: 1/i);
     expect(container.textContent).toMatch(/\(no events yet\)/i);
+
+    act(() => {
+      root.unmount();
+    });
+    container.remove();
+  });
+
+  it('switches to placeholder simulations', () => {
+    const { container, root } = renderApp();
+    const buttons = Array.from(container.querySelectorAll('button'));
+
+    const clickByText = (label: RegExp): void => {
+      const button = buttons.find((item) => label.test(item.textContent ?? ''));
+      expect(button).toBeTruthy();
+      act(() => {
+        button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+    };
+
+    clickByText(/react cycle/i);
+    expect(container.textContent).toMatch(/React Rendering Cycle Playground/i);
+    expect(container.textContent).toMatch(/coming next/i);
+
+    clickByText(/concurrency/i);
+    expect(container.textContent).toMatch(/Concurrency vs Parallelism Playground/i);
 
     act(() => {
       root.unmount();

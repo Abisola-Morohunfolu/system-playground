@@ -1,15 +1,76 @@
+import { useState } from 'react';
 import { useNodeEventLoopController } from '../hooks/use-node-event-loop-controller';
 
+type SimulationKey = 'node' | 'react' | 'concurrency';
+
 export const App = (): JSX.Element => {
-  const { controller, snapshot } = useNodeEventLoopController();
+  const [activeSimulation, setActiveSimulation] = useState<SimulationKey>('node');
+  
+  const title =
+    activeSimulation === 'node'
+      ? 'Node.js Event Loop Playground'
+      : activeSimulation === 'react'
+        ? 'React Rendering Cycle Playground'
+        : 'Concurrency vs Parallelism Playground';
+
+  const description =
+    activeSimulation === 'node'
+      ? 'Run and inspect queued request/microtask behavior.'
+      : activeSimulation === 'react'
+        ? 'Placeholder scaffold for render/reconcile/commit simulation.'
+        : 'Placeholder scaffold for worker/thread scheduling simulation.';
 
   return (
     <main className="app-shell">
       <header>
-        <h1>Node.js Event Loop Playground</h1>
-        <p>Run and inspect queued request/microtask behavior.</p>
+        <h1>{title}</h1>
+        <p>{description}</p>
       </header>
 
+      <section className="panel controls">
+        <strong>Simulation</strong>
+        <button
+          className={activeSimulation === 'node' ? 'active' : ''}
+          onClick={() => setActiveSimulation('node')}
+        >
+          Node Event Loop
+        </button>
+        <button
+          className={activeSimulation === 'react' ? 'active' : ''}
+          onClick={() => setActiveSimulation('react')}
+        >
+          React Cycle
+        </button>
+        <button
+          className={activeSimulation === 'concurrency' ? 'active' : ''}
+          onClick={() => setActiveSimulation('concurrency')}
+        >
+          Concurrency
+        </button>
+      </section>
+
+      {activeSimulation === 'node' ? <NodeEventLoopView /> : null}
+      {activeSimulation === 'react' ? (
+        <PlaceholderCard
+          headline="React cycle simulation coming next"
+          points={['Render queue', 'Reconciliation', 'Commit + effects timeline']}
+        />
+      ) : null}
+      {activeSimulation === 'concurrency' ? (
+        <PlaceholderCard
+          headline="Concurrency simulation coming next"
+          points={['Task lanes', 'CPU worker model', 'Parallel vs interleaved trace']}
+        />
+      ) : null}
+    </main>
+  );
+};
+
+const NodeEventLoopView = (): JSX.Element => {
+  const { controller, snapshot } = useNodeEventLoopController();
+
+  return (
+    <>
       <section className="panel controls">
         <button onClick={() => controller.start()}>Start</button>
         <button onClick={() => controller.pause()}>Pause</button>
@@ -73,7 +134,26 @@ export const App = (): JSX.Element => {
             ))}
         </ul>
       </section>
-    </main>
+    </>
+  );
+};
+
+const PlaceholderCard = ({
+  headline,
+  points,
+}: {
+  headline: string;
+  points: string[];
+}): JSX.Element => {
+  return (
+    <section className="panel placeholder">
+      <h2>{headline}</h2>
+      <ul>
+        {points.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
+    </section>
   );
 };
 
