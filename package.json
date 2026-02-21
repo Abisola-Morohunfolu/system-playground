@@ -2,6 +2,10 @@
   "name": "system-playground",
   "private": true,
   "packageManager": "yarn@4.6.0",
+  "engines": {
+    "node": ">=20.11.0",
+    "yarn": ">=4.6.0"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -15,7 +19,9 @@
     "clean": "lerna run clean --stream",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "release:dry-run": "changeset publish --dry-run",
+    "validate": "yarn lint && yarn typecheck && yarn test && yarn build"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

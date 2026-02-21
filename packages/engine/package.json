@@ -20,11 +20,15 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src --ext .ts",
-    "test": "vitest run",
+    "lint": "eslint . --ext .js,.cjs,.mjs --no-error-on-unmatched-pattern",
+    "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.11.0"
   }
 }

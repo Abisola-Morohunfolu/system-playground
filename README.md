@@ -17,6 +17,17 @@ Yarn v4 + Lerna + Changesets monorepo for simulation engine-first development.
 3. Build all: `yarn build`
 4. Run web app: `yarn dev:web`
 
+## Tooling Baseline
+
+- Node.js: `20.x` (`.nvmrc` included)
+- Package manager: Yarn v4 (`packageManager` enforced in root `package.json`)
+- Monorepo orchestration: Lerna
+- Versioning/publishing: Changesets
+
+## Validation
+
+- Run full quality gate: `yarn validate`
+
 ## Release flow
 
 1. Add changeset: `yarn changeset`
