@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SimulationPlugin, SimulationState } from '../types/simulation';
 import { SimulationRuntime } from './runtime';
+import { ActionScheduler } from '../scheduler/action-scheduler';
 
 interface CounterState extends SimulationState {
   count: number;
@@ -74,5 +75,30 @@ describe('SimulationRuntime', () => {
     runtime.step();
 
     expect(seen).toEqual([1, 2]);
+  });
+
+  it('runs scheduled actions when they become ready', () => {
+    const scheduler = new ActionScheduler();
+    const runtime = new SimulationRuntime(createPlugin(), { now: () => 7, scheduler });
+
+    runtime.enqueue({ type: 'inc' });
+    runtime.scheduleIn(2, { type: 'inc' });
+
+    expect(runtime.runReadyActions()).toBe(1);
+    expect(runtime.getState().count).toBe(1);
+    expect(runtime.getTick()).toBe(1);
+
+    runtime.advanceScheduler(2);
+    expect(runtime.getSchedulerTick()).toBe(2);
+    expect(runtime.runReadyActions()).toBe(1);
+    expect(runtime.getState().count).toBe(2);
+    expect(runtime.getTick()).toBe(2);
+  });
+
+  it('throws for scheduler operations when scheduler is not configured', () => {
+    const runtime = new SimulationRuntime(createPlugin());
+
+    expect(() => runtime.enqueue({ type: 'inc' })).toThrow('Scheduler is not configured');
+    expect(() => runtime.runReadyActions()).toThrow('Scheduler is not configured');
   });
 });
