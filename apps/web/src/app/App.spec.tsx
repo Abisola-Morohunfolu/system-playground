@@ -44,13 +44,13 @@ describe('App', () => {
       });
     };
 
+    clickByText(/^pause$/i);
     clickByText(/inject request/i);
     clickByText(/^step$/i);
-    clickByText(/run task/i);
     clickByText(/^step$/i);
 
     expect(container.textContent).toMatch(/Incoming Requests: 1/i);
-    expect(container.textContent).toMatch(/Runtime Tick: 2/i);
+    expect(container.textContent).toMatch(/Runtime Tick: 3/i);
 
     act(() => {
       root.unmount();
@@ -70,6 +70,7 @@ describe('App', () => {
       });
     };
 
+    clickByText(/^pause$/i);
     clickByText(/single request flow/i);
     clickByText(/^step$/i);
     clickByText(/clear timeline/i);

@@ -6,7 +6,6 @@ describe('NodeEventLoopController', () => {
     const controller = new NodeEventLoopController();
 
     controller.injectRequest('req-a');
-    controller.enqueueTaskDequeue();
     controller.step();
 
     const snapshot = controller.getSnapshot();
@@ -25,12 +24,13 @@ describe('NodeEventLoopController', () => {
 
     controller.injectRequest('req-b');
     controller.step();
+    const countBeforeUnsubscribe = seenTicks.length;
     unsubscribe();
     controller.step();
 
     expect(seenTicks).toContain(0);
-    expect(seenTicks).toContain(1);
-    expect(seenTicks).not.toContain(2);
+    expect(Math.max(...seenTicks)).toBeGreaterThan(0);
+    expect(seenTicks.length).toBe(countBeforeUnsubscribe);
   });
 
   it('loads and executes the single-request preset flow', () => {

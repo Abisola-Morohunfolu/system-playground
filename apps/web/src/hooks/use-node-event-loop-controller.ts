@@ -13,6 +13,8 @@ export const useNodeEventLoopController = (): {
 
   useEffect(() => {
     const unsubscribe = controller.subscribe((next) => setSnapshot(next));
+    controller.start();
+
     return () => {
       unsubscribe();
       controller.destroy();

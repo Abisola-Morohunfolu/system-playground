@@ -90,6 +90,7 @@ export class NodeEventLoopController {
   step(): void {
     this.runtime.advanceScheduler(1);
     this.runtime.runReadyActions();
+    this.driveEventLoopTick();
     this.emit();
   }
 
@@ -158,6 +159,25 @@ export class NodeEventLoopController {
 
     for (const listener of this.listeners) {
       listener(snapshot);
+    }
+  }
+
+  private driveEventLoopTick(): void {
+    const state = this.runtime.getState();
+
+    // Complete current frame first. When stack is empty, prefer microtasks over tasks.
+    if (state.callStack.length > 0) {
+      this.runtime.dispatch({ type: 'callstack.pop' });
+      return;
+    }
+
+    if (state.microtaskQueue.length > 0) {
+      this.runtime.dispatch({ type: 'microtask.dequeue' });
+      return;
+    }
+
+    if (state.taskQueue.length > 0) {
+      this.runtime.dispatch({ type: 'task.dequeue' });
     }
   }
 }

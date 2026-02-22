@@ -94,9 +94,6 @@ const NodeEventLoopView = (): JSX.Element => {
       <section className="panel controls">
         <button onClick={() => controller.injectRequest()}>Inject Request</button>
         <button onClick={() => controller.enqueueIoCompletion()}>IO Complete</button>
-        <button onClick={() => controller.enqueueTaskDequeue()}>Run Task</button>
-        <button onClick={() => controller.enqueueMicrotaskDequeue()}>Run Microtask</button>
-        <button onClick={() => controller.enqueueCallstackPop()}>Pop Stack</button>
       </section>
 
       <section className="panel controls">
