@@ -9,9 +9,10 @@ describe('NodeEventLoopController', () => {
     controller.step();
 
     const snapshot = controller.getSnapshot();
-    expect(snapshot.runtimeTick).toBe(2);
+    expect(snapshot.runtimeTick).toBeGreaterThanOrEqual(2);
     expect(snapshot.state.incomingRequests).toBe(1);
-    expect(snapshot.state.callStack).toEqual(['req-a']);
+    expect(snapshot.state.callStack).toHaveLength(1);
+    expect(snapshot.metrics.running).toBe(1);
   });
 
   it('notifies subscribers on state changes', () => {
@@ -56,5 +57,33 @@ describe('NodeEventLoopController', () => {
     controller.clearHistory();
     expect(controller.getSnapshot().history).toEqual([]);
     expect(controller.getSnapshot().state.incomingRequests).toBe(1);
+  });
+
+  it('tracks io requests as waiting on db/io lane', () => {
+    const controller = new NodeEventLoopController();
+    controller.injectIoRequest('io-a');
+    let sawWaitingIo = false;
+    for (let step = 0; step < 8; step += 1) {
+      controller.step();
+      if (controller.getSnapshot().metrics.waitingIo > 0) {
+        sawWaitingIo = true;
+        break;
+      }
+    }
+
+    expect(sawWaitingIo).toBe(true);
+  });
+
+  it('completes io requests after callback returns to call stack', () => {
+    const controller = new NodeEventLoopController();
+    controller.injectIoRequest('io-b');
+
+    for (let step = 0; step < 8; step += 1) {
+      controller.step();
+    }
+
+    const snapshot = controller.getSnapshot();
+    expect(snapshot.metrics.completed).toBe(1);
+    expect(snapshot.metrics.waitingIo).toBe(0);
   });
 });

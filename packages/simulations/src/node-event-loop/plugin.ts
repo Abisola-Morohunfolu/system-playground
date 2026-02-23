@@ -6,7 +6,8 @@ export type NodeEventLoopActionType =
   | 'task.dequeue'
   | 'microtask.dequeue'
   | 'callstack.pop'
-  | 'microtask.enqueued';
+  | 'microtask.enqueued'
+  | 'phase.set';
 
 export interface NodeEventLoopActionPayload {
   label?: string;
@@ -17,6 +18,7 @@ export interface NodeEventLoopState extends SimulationState {
   callStack: string[];
   taskQueue: string[];
   microtaskQueue: string[];
+  activePhase: 'timers' | 'pending' | 'poll' | 'check' | 'close' | 'idle';
 }
 
 const toLabel = (value: unknown | undefined, fallback: string): string => {
@@ -37,10 +39,11 @@ export const nodeEventLoopPlugin: SimulationPlugin<NodeEventLoopState> = {
   init: () => ({
     tick: 0,
     incomingRequests: 0,
-    callStack: [],
-    taskQueue: [],
-    microtaskQueue: [],
-  }),
+      callStack: [],
+      taskQueue: [],
+      microtaskQueue: [],
+      activePhase: 'idle',
+    }),
   step: (state, action) => {
     const next: NodeEventLoopState = {
       ...state,
@@ -78,6 +81,17 @@ export const nodeEventLoopPlugin: SimulationPlugin<NodeEventLoopState> = {
       }
       case 'callstack.pop': {
         next.callStack.pop();
+        break;
+      }
+      case 'phase.set': {
+        if (
+          action?.payload &&
+          typeof action.payload === 'object' &&
+          'phase' in action.payload &&
+          typeof (action.payload as { phase?: unknown }).phase === 'string'
+        ) {
+          next.activePhase = (action.payload as { phase: NodeEventLoopState['activePhase'] }).phase;
+        }
         break;
       }
       default: {

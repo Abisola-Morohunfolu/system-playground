@@ -18,12 +18,21 @@ describe('App', () => {
     return { container, root };
   };
 
-  it('renders playground shell controls and panels', () => {
+  const clickByText = (container: HTMLDivElement, label: RegExp): void => {
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const button = buttons.find((item) => label.test(item.textContent ?? ''));
+    expect(button).toBeTruthy();
+    act(() => {
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+  };
+
+  it('renders shell, simulation switch, and node board by default', () => {
     const { container, root } = renderApp();
 
-    expect(container.textContent).toMatch(/Node.js Event Loop Playground/i);
-    expect(container.textContent).toMatch(/React Cycle/i);
-    expect(container.textContent).toMatch(/Inject Request/i);
+    expect(container.textContent).toMatch(/Visual Runtime Playground/i);
+    expect(container.textContent).toMatch(/Node Event Loop/i);
+    expect(container.textContent).toMatch(/Runtime Tick/i);
     expect(container.textContent).toMatch(/Task Queue/i);
 
     act(() => {
@@ -32,25 +41,16 @@ describe('App', () => {
     container.remove();
   });
 
-  it('injects and runs a task through the queue controls', async () => {
+  it('supports spawning requests and stepping simulation', () => {
     const { container, root } = renderApp();
-    const buttons = Array.from(container.querySelectorAll('button'));
 
-    const clickByText = (label: RegExp): void => {
-      const button = buttons.find((item) => label.test(item.textContent ?? ''));
-      expect(button).toBeTruthy();
-      act(() => {
-        button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-    };
+    clickByText(container, /^pause$/i);
+    clickByText(container, /\+ cpu hash request/i);
+    clickByText(container, /^step$/i);
+    clickByText(container, /^step$/i);
 
-    clickByText(/^pause$/i);
-    clickByText(/inject request/i);
-    clickByText(/^step$/i);
-    clickByText(/^step$/i);
-
-    expect(container.textContent).toMatch(/Incoming Requests: 1/i);
-    expect(container.textContent).toMatch(/Runtime Tick: 3/i);
+    expect(container.textContent).toMatch(/request-1/i);
+    expect(container.textContent).toMatch(/Runtime Timeline/i);
 
     act(() => {
       root.unmount();
@@ -58,24 +58,15 @@ describe('App', () => {
     container.remove();
   });
 
-  it('loads preset and can clear timeline from UI', async () => {
+  it('loads preset flow and allows clearing timeline', () => {
     const { container, root } = renderApp();
-    const buttons = Array.from(container.querySelectorAll('button'));
 
-    const clickByText = (label: RegExp): void => {
-      const button = buttons.find((item) => label.test(item.textContent ?? ''));
-      expect(button).toBeTruthy();
-      act(() => {
-        button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-    };
+    clickByText(container, /^pause$/i);
+    clickByText(container, /single request flow/i);
+    clickByText(container, /^step$/i);
+    clickByText(container, /clear timeline/i);
 
-    clickByText(/^pause$/i);
-    clickByText(/single request flow/i);
-    clickByText(/^step$/i);
-    clickByText(/clear timeline/i);
-
-    expect(container.textContent).toMatch(/Incoming Requests: 1/i);
+    expect(container.textContent).toMatch(/request-1|preset-db-1/i);
     expect(container.textContent).toMatch(/\(no events yet\)/i);
 
     act(() => {
@@ -86,22 +77,26 @@ describe('App', () => {
 
   it('switches to placeholder simulations', () => {
     const { container, root } = renderApp();
-    const buttons = Array.from(container.querySelectorAll('button'));
 
-    const clickByText = (label: RegExp): void => {
-      const button = buttons.find((item) => label.test(item.textContent ?? ''));
-      expect(button).toBeTruthy();
-      act(() => {
-        button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      });
-    };
-
-    clickByText(/react cycle/i);
+    clickByText(container, /react cycle/i);
     expect(container.textContent).toMatch(/React Rendering Cycle Playground/i);
-    expect(container.textContent).toMatch(/coming next/i);
 
-    clickByText(/concurrency/i);
+    clickByText(container, /concurrency/i);
     expect(container.textContent).toMatch(/Concurrency vs Parallelism Playground/i);
+
+    act(() => {
+      root.unmount();
+    });
+    container.remove();
+  });
+
+  it('shows flow lanes for clients, server and io workers', () => {
+    const { container, root } = renderApp();
+
+    expect(container.textContent).toMatch(/Clients/i);
+    expect(container.textContent).toMatch(/Node Server/i);
+    expect(container.textContent).toMatch(/I\/O Workers/i);
+    expect(container.textContent).toMatch(/Active Phase/i);
 
     act(() => {
       root.unmount();

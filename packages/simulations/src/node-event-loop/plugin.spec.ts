@@ -70,4 +70,15 @@ describe('nodeEventLoopPlugin contract', () => {
 
     expect(next.callStack).toEqual([]);
   });
+
+  it('sets active phase when phase.set is dispatched', () => {
+    const initial = nodeEventLoopPlugin.init(testContext);
+    const next = nodeEventLoopPlugin.step(
+      initial,
+      { type: 'phase.set', payload: { phase: 'poll' } },
+      testContext,
+    );
+
+    expect(next.activePhase).toBe('poll');
+  });
 });
