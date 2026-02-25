@@ -32,8 +32,8 @@ describe('App', () => {
 
     expect(container.textContent).toMatch(/Visual Runtime Playground/i);
     expect(container.textContent).toMatch(/Node Event Loop/i);
-    expect(container.textContent).toMatch(/Runtime Tick/i);
-    expect(container.textContent).toMatch(/Task Queue/i);
+    expect(container.textContent).toMatch(/Event Loop Lifecycle/i);
+    expect(container.textContent).toMatch(/Macrotask Queue/i);
 
     act(() => {
       root.unmount();
@@ -50,7 +50,7 @@ describe('App', () => {
     clickByText(container, /^step$/i);
 
     expect(container.textContent).toMatch(/request-1/i);
-    expect(container.textContent).toMatch(/Runtime Timeline/i);
+    expect(container.textContent).toMatch(/Real-Time Stream/i);
 
     act(() => {
       root.unmount();
@@ -90,13 +90,12 @@ describe('App', () => {
     container.remove();
   });
 
-  it('shows flow lanes for clients, server and io workers', () => {
+  it('shows ingress, lifecycle and thread pool sections', () => {
     const { container, root } = renderApp();
 
-    expect(container.textContent).toMatch(/Clients/i);
-    expect(container.textContent).toMatch(/Node Server/i);
-    expect(container.textContent).toMatch(/I\/O Workers/i);
-    expect(container.textContent).toMatch(/Active Phase/i);
+    expect(container.textContent).toMatch(/Request Ingress/i);
+    expect(container.textContent).toMatch(/Event Loop Lifecycle/i);
+    expect(container.textContent).toMatch(/Libuv Thread Pool/i);
 
     act(() => {
       root.unmount();
