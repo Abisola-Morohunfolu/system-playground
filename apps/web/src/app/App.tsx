@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NodeEventLoopPlayground } from '../components/node/NodeEventLoopPlayground';
+import { ReactRenderCyclePlayground } from '../components/react/ReactRenderCyclePlayground';
 
 type SimulationKey = 'node' | 'react' | 'concurrency';
 
@@ -36,12 +37,7 @@ export const App = (): JSX.Element => {
       </nav>
 
       {activeSimulation === 'node' ? <NodeEventLoopPlayground /> : null}
-      {activeSimulation === 'react' ? (
-        <PlaceholderSection
-          title="React Rendering Cycle Playground"
-          description="Next: visualize render, reconcile, commit, and effect flush in a single timeline."
-        />
-      ) : null}
+      {activeSimulation === 'react' ? <ReactRenderCyclePlayground /> : null}
       {activeSimulation === 'concurrency' ? (
         <PlaceholderSection
           title="Concurrency vs Parallelism Playground"
