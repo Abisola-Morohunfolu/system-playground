@@ -35,8 +35,8 @@ The repo is configured so Vercel can build from the repository root.
 1. Import the repository into Vercel.
 2. Keep the project root as the repo root.
 3. Vercel will use `vercel.json`:
-   - install: `yarn install --immutable`
-   - build: `yarn build:web`
+   - install: `corepack enable && corepack prepare yarn@4.6.0 --activate && yarn install --immutable`
+   - build: `corepack enable && corepack prepare yarn@4.6.0 --activate && yarn build:web`
    - output: `apps/web/dist`
 
 Local verification: `yarn build:web`
