@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "lerna run build --stream",
+    "build:web": "yarn workspace @system-playground/web build",
     "typecheck": "lerna run typecheck --stream",
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream",
