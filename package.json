@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "yarn@4.13.0",
   "engines": {
-    "node": ">=20.11.0",
+    "node": ">=20.19.0",
     "yarn": ">=4.6.0"
   },
   "workspaces": [
