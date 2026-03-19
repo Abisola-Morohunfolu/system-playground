@@ -35,11 +35,11 @@ The repo is configured so Vercel can build from the repository root.
 1. Import the repository into Vercel.
 2. Keep the project root as the repo root.
 3. Vercel will use `vercel.json`:
-   - install: `node .yarn/releases/yarn-4.6.0.cjs install --immutable`
-   - build: `node .yarn/releases/yarn-4.6.0.cjs build:web`
-   - output: `apps/web/dist`
+   - install: `yarn install --immutable`
+   - build: `yarn build:vercel`
+   - output: `dist`
 
-Local verification: `yarn build:web`
+Local verification: `yarn build:vercel`
 
 ## Release flow
 

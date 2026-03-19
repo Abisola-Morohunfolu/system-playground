@@ -13,6 +13,7 @@
   "scripts": {
     "build": "lerna run build --stream",
     "build:web": "yarn workspace @system-playground/web build",
+    "build:vercel": "yarn workspace @system-playground/web build && rimraf dist && mkdir -p dist && cp -R apps/web/dist/. dist/",
     "typecheck": "lerna run typecheck --stream",
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream",
